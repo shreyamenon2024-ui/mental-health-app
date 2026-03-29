@@ -67,23 +67,37 @@ if (!isLoggedIn) {
 document.getElementById("username").innerText =
     localStorage.getItem("userName");
 
-async function handleCheckin() {
-  const stress = document.querySelectorAll("select")[0].value;
-  const sleep = document.querySelector('input[type="number"]').value;
-  const focus = document.querySelectorAll("select")[1].value;
-  const mood = document.querySelector('input[type="text"]').value;
+async function loadStudents() {
+  const tbody = document.getElementById('student-list');
+  
+  // Get both open and assigned sessions
+  const openData = await getOpenSessions();
+  const myData = await getMyCounsellorSessions();
+  
+  const openSessions = openData.sessions || [];
+  const mySessions = myData.sessions || [];
+  
+  // Combine both lists
+  const allSessions = [...openSessions, ...mySessions];
 
-  if (!stress || !sleep || !focus || !mood) {
-    alert("Please fill all fields!");
+  if (allSessions.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3">No students yet.</td></tr>';
     return;
   }
 
-  const data = await submitCheckin(stress, sleep, focus, mood);
-  if (data.sessionId) {
-    alert("Check-in submitted successfully!");
-  } else {
-    alert("Error: " + (data.error || "Something went wrong"));
-  }
+  tbody.innerHTML = allSessions.map(s => `
+    <tr>
+      <td>${s.student_name}</td>
+      <td style="color:${s.status === 'open' ? 'orange' : s.status === 'in_progress' ? 'green' : 'gray'};">
+        ${s.status}
+      </td>
+      <td>
+        ${s.status === 'open' 
+          ? `<button onclick="claimSession(${s.id})">Claim</button>` 
+          : `<a href="student-detail.html?id=${s.id}">View</a>`}
+      </td>
+    </tr>
+  `).join('');
 }
 
 function logout() {
