@@ -16,10 +16,10 @@
     </ul>
   </div>
   <div class="main">
-    <h1>Assigned Students</h1>
+    <h1>All Students</h1>
     <table>
       <tr>
-        <th>ID</th>
+        <th>Student</th>
         <th>Status</th>
         <th>Action</th>
       </tr>
@@ -33,24 +33,45 @@
 <script src="api.js"></script>
 <script>
 async function loadStudents() {
-  const data = await getMyCounsellorSessions();
-  const sessions = data.sessions || [];
   const tbody = document.getElementById('student-list');
 
-  if (sessions.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3">No students assigned yet.</td></tr>';
+  const openData = await getOpenSessions();
+  const myData = await getMyCounsellorSessions();
+
+  const openSessions = (openData.sessions || []).map(s => ({...s, mine: false}));
+  const mySessions = (myData.sessions || []).map(s => ({...s, mine: true}));
+
+  const allSessions = [...openSessions, ...mySessions];
+
+  if (allSessions.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3">No students yet.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = sessions.map(s => `
+  tbody.innerHTML = allSessions.map(s => `
     <tr>
       <td>${s.student_name}</td>
       <td style="color:${s.status === 'open' ? 'orange' : s.status === 'in_progress' ? 'green' : 'gray'};">
         ${s.status}
       </td>
-      <td><a href="student-detail.html?id=${s.id}">View</a></td>
+      <td>
+        ${!s.mine
+          ? `<button onclick="handleClaim(${s.id})">Claim</button>`
+          : `<a href="student-detail.html?id=${s.id}">View</a>`
+        }
+      </td>
     </tr>
   `).join('');
+}
+
+async function handleClaim(sessionId) {
+  const data = await claimSession(sessionId);
+  if (data.message) {
+    alert("Session claimed!");
+    loadStudents();
+  } else {
+    alert("Error: " + (data.error || "Something went wrong"));
+  }
 }
 
 loadStudents();
