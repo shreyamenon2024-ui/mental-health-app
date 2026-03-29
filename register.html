@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register - MindCare</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main center">
+  <h1>Join MindCare 🌿</h1>
+  <p class="subtext">Create your account</p>
+
+  <div class="checkin-box">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Choose a username">
+
+    <label style="margin-top:15px;">Password</label>
+    <input type="password" id="password" placeholder="Choose a password">
+
+    <label style="margin-top:15px;">Confirm Password</label>
+    <input type="password" id="confirmpassword" placeholder="Confirm your password">
+
+    <label style="margin-top:15px;">Role</label>
+    <select id="role">
+      <option value="">Select role</option>
+      <option value="student">Student</option>
+      <option value="counsellor">Counsellor</option>
+      <option value="peer">Peer Support</option>
+    </select>
+
+    <br><br>
+    <button onclick="handleRegister()">Register 🌱</button>
+    <br><br>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+async function handleRegister() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmpassword = document.getElementById("confirmpassword").value;
+  const role = document.getElementById("role").value;
+
+  if (!username || !password || !confirmpassword || !role) {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  if (password !== confirmpassword) {
+    alert("Passwords don't match!");
+    return;
+  }
+
+  if (password.length < 4) {
+    alert("Password must be at least 4 characters!");
+    return;
+  }
+
+  const data = await register(username, password, role);
+
+  if (data.userId) {
+    alert("Account created successfully! Please login.");
+    window.location.href = "login.html";
+  } else {
+    alert("Error: " + (data.error || "Something went wrong"));
+  }
+}
+</script>
+
+</body>
+</html>
