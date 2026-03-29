@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Counsellor Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<script>
+const isLoggedIn = localStorage.getItem("loggedIn");
+if (!isLoggedIn) {
+    window.location.href = "login.html";
+}
+</script>
+
+<div class="container">
+
+    <div class="sidebar">
+        <h2>MindCare</h2>
+        <ul>
+            <li><a href="counsellor.html">Dashboard</a></li>
+            <li><a href="students.html">Students</a></li>
+        </ul>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main">
+
+        <h1>Counsellor Dashboard</h1>
+        <p>Welcome, <span id="username"></span></p>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Total Students</h3>
+                <p>12</p>
+            </div>
+
+            <div class="card">
+                <h3>Need Attention</h3>
+                <p>3</p>
+            </div>
+        </div>
+
+        <canvas id="stressChart"></canvas>
+
+    </div>
+
+</div>
+
+<script>
+document.getElementById("username").innerText =
+    localStorage.getItem("userName");
+
+async function loadDashboard() {
+  const data = await getMyCounsellorSessions();
+  const sessions = data.sessions || [];
+  
+  const total = sessions.length;
+  const needAttention = sessions.filter(s => s.status === 'open').length;
+  
+  document.querySelectorAll('.card p')[0].innerText = total;
+  document.querySelectorAll('.card p')[1].innerText = needAttention;
+}
+
+loadDashboard();
+
+function logout() {
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
+    window.location.href = "login.html";
+}
+</script>
+<script src="api.js"></script>
+</body>
+</html>

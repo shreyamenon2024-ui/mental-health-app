@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Check-in</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- 🔐 PROTECTION -->
+<script>
+const isLoggedIn = localStorage.getItem("loggedIn");
+if (!isLoggedIn) {
+    window.location.href = "login.html";
+}
+</script>
+
+<div class="main center">
+
+    <h1>Daily Check-in 🌿</h1>
+    <p>Welcome, <span id="username"></span></p>
+
+    <div class="checkin-box">
+
+        <div class="form-group">
+            <label>Stress Level</label>
+            <select>
+                <option>1 😌</option>
+                <option>2 🙂</option>
+                <option>3 😐</option>
+                <option>4 😟</option>
+                <option>5 😣</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Sleep Hours</label>
+            <input type="number">
+        </div>
+
+        <div class="form-group">
+            <label>Focus Level</label>
+            <select>
+                <option>1 😴</option>
+                <option>2 😕</option>
+                <option>3 😐</option>
+                <option>4 🙂</option>
+                <option>5 🔥</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Mood</label>
+            <input type="text">
+        </div>
+
+        <button onclick="submitCheckin()">Submit</button>
+
+    </div>
+
+    <br>
+    <button onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+document.getElementById("username").innerText =
+    localStorage.getItem("userName");
+
+async function submitCheckin() {
+  const stress = document.querySelectorAll("select")[0].value;
+  const sleep = document.querySelector('input[type="number"]').value;
+  const focus = document.querySelectorAll("select")[1].value;
+  const mood = document.querySelector('input[type="text"]').value;
+
+  const data = await submitCheckin(stress, sleep, focus, mood);
+  if (data.sessionId) {
+    alert("Check-in submitted successfully!");
+  } else {
+    alert("Error: " + (data.error || "Something went wrong"));
+  }
+}
+
+function logout() {
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
+    window.location.href = "login.html";
+}
+</script>
+<script src="api.js"></script>
+</body>
+</html>

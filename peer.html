@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Peer Support</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+const isLoggedIn = localStorage.getItem("loggedIn");
+if (!isLoggedIn) window.location.href = "login.html";
+</script>
+
+<div class="main">
+  <h1>Peer Support</h1>
+  <p>Welcome, <span id="username"></span></p>
+
+  <div class="form-group">
+    <textarea id="postInput" placeholder="Share how you're feeling..."></textarea>
+    <button onclick="submitPost()">Post</button>
+  </div>
+
+  <div id="posts-list">Loading posts...</div>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script src="api.js"></script>
+<script>
+document.getElementById("username").innerText = localStorage.getItem("userName");
+
+async function loadPosts() {
+  const data = await getPeerPosts();
+  const posts = data.posts || [];
+  const container = document.getElementById('posts-list');
+
+  if (posts.length === 0) {
+    container.innerHTML = '<p>No posts yet. Be the first to share!</p>';
+    return;
+  }
+
+  container.innerHTML = posts.map(p => `
+    <div class="post">
+      <p><strong>${p.posted_by}</strong>: ${p.content}</p>
+      <small>${new Date(p.created_at).toLocaleDateString()}</small>
+      <br>
+      <input type="text" id="reply-${p.id}" placeholder="Write a reply...">
+      <button onclick="submitReply(${p.id})">Reply</button>
+      <span>${p.reply_count} replies</span>
+    </div>
+  `).join('');
+}
+
+async function submitPost() {
+  const content = document.getElementById('postInput').value.trim();
+  if (!content) {
+    alert('Please write something first!');
+    return;
+  }
+  const data = await createPeerPost(content);
+  if (data.postId) {
+    document.getElementById('postInput').value = '';
+    alert('Posted successfully!');
+    loadPosts();
+  } else {
+    alert('Error: ' + (data.error || 'Something went wrong'));
+  }
+}
+
+async function submitReply(postId) {
+  const input = document.getElementById(`reply-${postId}`);
+  const content = input.value.trim();
+  if (!content) {
+    alert('Please write a reply first!');
+    return;
+  }
+  const data = await replyToPeerPost(postId, content);
+  if (data.message) {
+    input.value = '';
+    alert('Reply posted!');
+    loadPosts();
+  } else {
+    alert('Error: ' + (data.error || 'Something went wrong'));
+  }
+}
+
+function logout() {
+  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
+
+loadPosts();
+</script>
+
+</body>
+</html>
