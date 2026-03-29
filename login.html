@@ -1,50 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login - MindCare</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Login - MindCare</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="main center">
+  <h1>Welcome to MindCare 🌿</h1>
+  <p class="subtext">Secure login to continue</p>
 
-    <h1>Welcome to MindCare 🌿</h1>
-    <p class="subtext">Secure login to continue</p>
+  <div class="checkin-box">
+    <label>Name</label>
+    <input type="text" id="name" placeholder="Enter your name">
 
-    <div class="checkin-box">
+    <label style="margin-top:15px;">Password</label>
+    <input type="password" id="password" placeholder="Enter password">
 
-        <label>Name</label>
-        <input type="text" id="name" placeholder="Enter your name">
+    <label style="margin-top:15px;">Role</label>
+    <select id="role">
+      <option value="">Select role</option>
+      <option value="student">Student</option>
+      <option value="counsellor">Counsellor</option>
+      <option value="peer">Peer Support</option>
+    </select>
 
-        <label style="margin-top:15px;">Password</label>
-        <input type="password" id="password" placeholder="Enter password">
-
-        <label style="margin-top:15px;">Role</label>
-        <select id="role">
-            <option value="">Select role</option>
-            <option value="student">Student</option>
-            <option value="counsellor">Counsellor</option>
-            <option value="peer">Peer Support</option>
-        </select>
-
-        <br><br>
-        <button onclick="handleLogin()">Login 🔐</button>
-
-    </div>
-
+    <br><br>
+    <button onclick="handleLogin()">Login 🔐</button>
+  </div>
 </div>
 
+<script src="api.js"></script>
 <script>
-
-/* 🔐 Dummy users (simulate database) */
-const users = {
-    student: { password: "1234" },
-    counsellor: { password: "admin" },
-    peer: { password: "1111" }
-};
-
-async function login() {
+async function handleLogin() {
   const name = document.getElementById("name").value.trim();
   const password = document.getElementById("password").value;
   const role = document.getElementById("role").value;
@@ -54,18 +42,20 @@ async function login() {
     return;
   }
 
-  const data = await window.loginUser(name, password);
-
-  if (data.token) {
-    if (role === "student") window.location.href = "student.html";
-    else if (role === "counsellor") window.location.href = "counsellor.html";
-    else window.location.href = "peer.html";
-  } else {
-    alert("Login failed: " + (data.error || "Invalid credentials"));
+  try {
+    const data = await login(name, password);
+    if (data.token) {
+      if (role === "student") window.location.href = "student.html";
+      else if (role === "counsellor") window.location.href = "counsellor.html";
+      else window.location.href = "peer.html";
+    } else {
+      alert("Login failed: " + (data.error || "Invalid credentials"));
+    }
+  } catch(err) {
+    alert("Error: " + err.message);
   }
 }
-
 </script>
-<script src="api.js"></script>
+
 </body>
 </html>
