@@ -7,6 +7,13 @@
 
 <body>
 
+<script>
+// 🔐 Protect page
+if (!localStorage.getItem("token")) {
+    window.location.href = "login.html";
+}
+</script>
+
 <div class="container">
 
     <!-- Sidebar -->
@@ -22,18 +29,51 @@
     <!-- Main -->
     <div class="main">
 
-        <h1>Student Details</h1>
+        <h1>Student Details 👤</h1>
 
-        <div class="checkin-box">
-
+        <!-- BASIC INFO -->
+        <div class="detail-card">
             <p><strong>Student ID:</strong> <span id="studentId"></span></p>
             <p><strong>Status:</strong> <span id="status"></span></p>
             <p><strong>Last Check-in:</strong> Today</p>
+        </div>
+
+        <!-- RESPONSE VIEWER -->
+        <div class="detail-card">
+            <h3>🧠 Student Responses</h3>
+            <ul id="answersList"></ul>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="detail-card">
+            <h3>📊 Summary</h3>
             <p><strong>Stress Level:</strong> 3</p>
             <p><strong>Sleep:</strong> 6 hours</p>
             <p><strong>Focus:</strong> 4</p>
             <p><strong>Mood:</strong> 😐 Neutral</p>
+        </div>
 
+        <!-- COUNSELLOR REPLY -->
+        <div class="detail-card">
+            <h3>💬 Counsellor Reply</h3>
+            <textarea id="reply" placeholder="Write advice..."></textarea>
+            <br><br>
+            <button onclick="sendReply()">Send Reply</button>
+        </div>
+
+        <!-- NOTES -->
+        <div class="detail-card">
+            <h3>📝 Private Notes</h3>
+            <textarea id="notes" placeholder="Only visible to you..."></textarea>
+            <br><br>
+            <button onclick="saveNotes()">Save Notes</button>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="detail-card">
+            <h3>🚨 Actions</h3>
+            <button onclick="markAlert()">Needs Attention 🚨</button>
+            <button onclick="markFollow()">Follow-up 📌</button>
         </div>
 
     </div>
@@ -41,19 +81,77 @@
 </div>
 
 <script>
+
+// 🔹 Get ID
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
-
 document.getElementById("studentId").innerText = id;
 
-// Dummy status logic
-if (id === "S002") {
-    document.getElementById("status").innerText = "Alert";
-    document.getElementById("status").style.color = "red";
-} else {
-    document.getElementById("status").innerText = "Normal";
-    document.getElementById("status").style.color = "green";
+// 🔥 DUMMY ANSWERS (simulate mental data)
+const answers = [
+    "Feels tired often",
+    "Low motivation",
+    "High academic pressure",
+    "Feels lonely",
+    "Social media stress",
+    "Mentally exhausted",
+    "Deadlines cause anxiety"
+];
+
+// 🔹 Display answers
+const list = document.getElementById("answersList");
+answers.forEach(a => {
+    const li = document.createElement("li");
+    li.innerText = a;
+    list.appendChild(li);
+});
+
+// 🔥 RISK LOGIC
+const statusEl = document.getElementById("status");
+
+if (answers.length <= 2) {
+    statusEl.innerText = "Normal 😊";
+    statusEl.className = "status-normal";
 }
+else if (answers.length <= 5) {
+    statusEl.innerText = "Moderate ⚠️";
+    statusEl.className = "status-medium";
+}
+else {
+    statusEl.innerText = "High Risk 🚨";
+    statusEl.className = "status-high";
+}
+
+// 💬 Send reply
+function sendReply() {
+    const reply = document.getElementById("reply").value;
+
+    if (!reply) {
+        alert("Please write a reply");
+        return;
+    }
+
+    localStorage.setItem("reply_" + id, reply);
+    alert("Reply sent successfully 💬");
+}
+
+// 📝 Save notes
+function saveNotes() {
+    const notes = document.getElementById("notes").value;
+
+    localStorage.setItem("notes_" + id, notes);
+    alert("Notes saved ✅");
+}
+
+// 🚨 Actions
+function markAlert() {
+    alert("Marked as Needs Attention 🚨");
+}
+
+function markFollow() {
+    alert("Marked for Follow-up 📌");
+}
+
 </script>
 
 </body>
