@@ -307,3 +307,4 @@ async function replyToPeerPost(postId, content) {
     return { error: 'Could not post reply.' };
   }
 }
+window.loginUser = login;
