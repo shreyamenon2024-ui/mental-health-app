@@ -1,77 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Check-in</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Student Check-in</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- 🔐 PROTECTION -->
 <script>
 const isLoggedIn = localStorage.getItem("loggedIn");
-if (!isLoggedIn) {
-    window.location.href = "login.html";
-}
+if (!isLoggedIn) window.location.href = "login.html";
 </script>
 
 <div class="main center">
-
-    <h1>Daily Check-in 🌿</h1>
-    <p>Welcome, <span id="username"></span></p>
-
-    <div class="checkin-box">
-
-        <div class="form-group">
-            <label>Stress Level</label>
-            <select>
-                <option>1 😌</option>
-                <option>2 🙂</option>
-                <option>3 😐</option>
-                <option>4 😟</option>
-                <option>5 😣</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Sleep Hours</label>
-            <input type="number">
-        </div>
-
-        <div class="form-group">
-            <label>Focus Level</label>
-            <select>
-                <option>1 😴</option>
-                <option>2 😕</option>
-                <option>3 😐</option>
-                <option>4 🙂</option>
-                <option>5 🔥</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Mood</label>
-            <input type="text">
-        </div>
-
-        <button onclick="handleCheckin()">Submit</button>
-
+  <h1>Daily Check-in 🌿</h1>
+  <p>Welcome, <span id="username"></span></p>
+  <div class="checkin-box">
+    <div class="form-group">
+      <label>Stress Level</label>
+      <select id="stress">
+        <option value="1">1 😌</option>
+        <option value="2">2 🙂</option>
+        <option value="3">3 😐</option>
+        <option value="4">4 😟</option>
+        <option value="5">5 😣</option>
+      </select>
     </div>
-
-    <br>
-    <button onclick="logout()">Logout</button>
-
+    <div class="form-group">
+      <label>Sleep Hours</label>
+      <input type="number" id="sleep">
+    </div>
+    <div class="form-group">
+      <label>Focus Level</label>
+      <select id="focus">
+        <option value="1">1 😴</option>
+        <option value="2">2 😕</option>
+        <option value="3">3 😐</option>
+        <option value="4">4 🙂</option>
+        <option value="5">5 🔥</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Mood</label>
+      <input type="text" id="mood">
+    </div>
+    <button onclick="handleCheckin()">Submit</button>
+  </div>
+  <br>
+  <button onclick="logout()">Logout</button>
 </div>
 
+<script src="api.js"></script>
 <script>
-document.getElementById("username").innerText =
-    localStorage.getItem("userName");
+document.getElementById("username").innerText = localStorage.getItem("userName");
 
-async function submitCheckin() {
-  const stress = document.querySelectorAll("select")[0].value;
-  const sleep = document.querySelector('input[type="number"]').value;
-  const focus = document.querySelectorAll("select")[1].value;
-  const mood = document.querySelector('input[type="text"]').value;
+async function handleCheckin() {
+  const stress = document.getElementById("stress").value;
+  const sleep = document.getElementById("sleep").value;
+  const focus = document.getElementById("focus").value;
+  const mood = document.getElementById("mood").value;
+
+  if (!sleep || !mood) {
+    alert("Please fill all fields!");
+    return;
+  }
 
   const data = await submitCheckin(stress, sleep, focus, mood);
   if (data.sessionId) {
@@ -82,12 +73,13 @@ async function submitCheckin() {
 }
 
 function logout() {
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userRole");
-    window.location.href = "login.html";
+  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
 }
 </script>
-<script src="api.js"></script>
+
 </body>
 </html>
