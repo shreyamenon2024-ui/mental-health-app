@@ -4,67 +4,127 @@
   <title>Student Check-in</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <script>
+// 🔐 Login check
 const isLoggedIn = localStorage.getItem("loggedIn");
 if (!isLoggedIn) window.location.href = "login.html";
 </script>
 
 <div class="main center">
+
   <h1>Daily Check-in 🌿</h1>
   <p>Welcome, <span id="username"></span></p>
+
   <div class="checkin-box">
-    <div class="form-group">
-      <label>Stress Level</label>
-      <select id="stress">
-        <option value="1">1 😌</option>
-        <option value="2">2 🙂</option>
-        <option value="3">3 😐</option>
-        <option value="4">4 😟</option>
-        <option value="5">5 😣</option>
-      </select>
+
+    <!-- QUESTIONS -->
+    <div class="form-group"><label>😴 Wake up feeling rested?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
     </div>
-    <div class="form-group">
-      <label>Sleep Hours</label>
-      <input type="number" id="sleep">
+
+    <div class="form-group"><label>🌅 Motivated to start your day?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
     </div>
-    <div class="form-group">
-      <label>Focus Level</label>
-      <select id="focus">
-        <option value="1">1 😴</option>
-        <option value="2">2 😕</option>
-        <option value="3">3 😐</option>
-        <option value="4">4 🙂</option>
-        <option value="5">5 🔥</option>
-      </select>
+
+    <div class="form-group"><label>📚 Academic pressure?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
     </div>
-    <div class="form-group">
-      <label>Mood</label>
-      <input type="text" id="mood">
+
+    <div class="form-group"><label>😔 Feel lonely?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
     </div>
-    <button onclick="handleCheckin()">Submit</button>
+
+    <div class="form-group"><label>🎉 Participate in activities?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>🍽️ Appetite changes?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>⏰ Deadlines stress?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>🧠 Mentally exhausted?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>📱 Social media stress?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>📲 Phone escape?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>🗣️ Talk when stressed?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>🏠 Feel disconnected?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>🩺 Seek help?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>😡 Irritated easily?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>🎭 Lost interest?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>💪 Handle problems?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>⚠️ Feel unsafe?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <div class="form-group"><label>😴 Feel exhausted?</label>
+      <select><option>Never</option><option>Rarely</option><option>Sometimes</option><option>Often</option><option>Always</option></select>
+    </div>
+
+    <button onclick="handleCheckin()">Submit 💙</button>
+
   </div>
+
   <br>
   <button onclick="logout()">Logout</button>
+
 </div>
 
 <script src="api.js"></script>
+
 <script>
-document.getElementById("username").innerText = localStorage.getItem("userName");
+// 👤 Username
+document.getElementById("username").innerText =
+  localStorage.getItem("userName");
 
+// 🚀 Submit (connected to backend)
 async function handleCheckin() {
-  const stress = document.getElementById("stress").value;
-  const sleep = document.getElementById("sleep").value;
-  const focus = document.getElementById("focus").value;
-  const mood = document.getElementById("mood").value;
 
-  if (!sleep || !mood) {
-    alert("Please fill all fields!");
-    return;
-  }
+  const selects = document.querySelectorAll("select");
+  const answers = [];
+
+  selects.forEach(s => answers.push(s.value));
+
+  // 🧠 Simple conversion for backend (optional)
+  const stress = answers[2] === "Often" || answers[2] === "Always" ? 4 : 2;
+  const sleep = 6; // default since no direct input now
+  const focus = answers[7] === "Often" ? 4 : 2;
+  const mood = "Survey Submitted";
 
   const data = await submitCheckin(stress, sleep, focus, mood);
+
   if (data.sessionId) {
     alert("Check-in submitted successfully!");
   } else {
@@ -72,11 +132,9 @@ async function handleCheckin() {
   }
 }
 
+// 🔓 Logout
 function logout() {
-  localStorage.removeItem("loggedIn");
-  localStorage.removeItem("userName");
-  localStorage.removeItem("userRole");
-  localStorage.removeItem("token");
+  localStorage.clear();
   window.location.href = "login.html";
 }
 </script>

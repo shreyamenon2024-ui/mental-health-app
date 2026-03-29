@@ -51,7 +51,7 @@ body {
 /* Center Page */
 .center {
     text-align: center;
-    margin-top: 80px;
+    margin-top: 60px;
 }
 
 /* Cards */
@@ -122,24 +122,49 @@ tr:hover {
     margin-bottom: 20px;
 }
 
+/* 🔥 UPDATED CHECKIN BOX (IMPORTANT) */
 .checkin-box {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    width: 420px;
+    width: 480px;
     margin: auto;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+
+    /* 🔥 NEW */
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* Scrollbar Styling */
+.checkin-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.checkin-box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* Labels (Better spacing) */
+.checkin-box label {
+    display: block;
+    margin-top: 18px;
+    font-weight: 500;
+    text-align: left;
+    color: #2c3e50;
 }
 
 /* Inputs */
 input, textarea, select {
     width: 100%;
     padding: 12px;
-    margin-top: 5px;
+    margin-top: 6px;
     border-radius: 8px;
     border: 1px solid #ccc;
     outline: none;
     transition: 0.2s;
+    font-size: 14px;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -162,6 +187,11 @@ button {
 button:hover {
     transform: scale(1.05);
     box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+}
+
+/* Submit Button spacing */
+.checkin-box button {
+    margin-top: 25px;
 }
 
 /* Headings */
@@ -190,6 +220,18 @@ h1 {
     margin-top: 10px;
 }
 
+/* Like Button */
+button.liked {
+    background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+}
+
+/* Like Info */
+.likedBy {
+    font-size: 13px;
+    margin-top: 5px;
+    color: #fff;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .cards {
@@ -199,19 +241,10 @@ h1 {
 
     .checkin-box {
         width: 90%;
+        max-height: 80vh;
     }
 
     input, textarea, select {
         width: 100%;
     }
-}
-
-button.liked {
-    background: linear-gradient(135deg, #e74c3c, #ff6b6b);
-}
-
-.likedBy {
-    font-size: 13px;
-    margin-top: 5px;
-    color: #fff;
 }
